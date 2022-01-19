@@ -4,7 +4,7 @@ plugins:
     - replacements:
       - files:
         - ./version.txt
-        from: '"version": *.*.*'
+        from: 'version = *.*.*'
         to: '"version": "${nextRelease.version}"'
         results:
         - file: ./version.txt
