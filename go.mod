@@ -1,4 +1,4 @@
-module irideos.it/ansible-openstack
+module git.kqi.it/gitops/golang/ansible-openstack
 
 go 1.17
 
@@ -6,7 +6,6 @@ require (
 	github.com/gophercloud/gophercloud v0.24.0
 	github.com/gophercloud/utils v0.0.0-20210909165623-d7085207ff6d
 	gopkg.in/ini.v1 v1.66.2
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
 require (

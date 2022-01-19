@@ -1,0 +1,38 @@
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - - "@google/semantic-release-replace-plugin"
+    - replacements:
+      - files:
+        - ./version.txt
+        from: '"version": *.*.*'
+        to: '"version": "${nextRelease.version}"'
+        results:
+        - file: ./version.txt
+          hasChanged: true
+          numMatches: 1
+          numReplacements: 1
+        countMatches: true
+  - "@semantic-release/release-notes-generator"
+  - "@semantic-release/changelog"
+  # Uncomment to start using containers!
+  # - "semantic-release-gitlab-registry"
+  - "@semantic-release/gitlab"
+  - - "@semantic-release/git"
+    - assets:
+        - CHANGELOG.md
+        - version.txt
+      message: |-
+        chore(release): ${nextRelease.version} [skip ci]
+        ${nextRelease.notes}
+branches:
+  - name: "+([0-9])?(.{+([0-9]),x}).x"
+    channel: "gitlab-go-snapshot"
+  - name: "master"
+    channel: "gitlab-go"
+  - name: "pre/beta"
+    channel: "gitlab-go"
+    prerelease: "beta"
+  - name: "pre/rc"
+    channel: "gitlab-go"
+    prerelease: "rc"
+debug: false
