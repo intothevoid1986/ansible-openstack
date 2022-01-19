@@ -6,13 +6,17 @@ GoLang Ansible Inventory Module for OpenStack aim to provide Ansible users a sim
 
 ## Basic Usage
 
-Run:
+To run the application do the following steps:
 
 ```bash
+git clone git@git.kqi.it:gitops/golang/ansible-openstack.git
+cd ansible-openstack
 go build -o ansible-openstak
 ```
 
-to generate an executable of this module. Copy the **ansible-openstack** bin into the root of your ansible project.
+this will generate a bin file of this application.
+
+Copy the **ansible-openstack** bin into the root of your ansible project.
 
 To connect to an OpenStack instance, two more files are required in the Ansible project root:
 
@@ -39,6 +43,7 @@ Customize it following your needs.
 ### secure.yaml
 
 ```yaml
+#secure.yaml
 clouds:
   ocloud:
     auth:
@@ -58,7 +63,7 @@ sudo ansible-openstack [tag list]
 
 to run the application with default parameters and generate a default inventory in hosts/inventory.ini
 
-**Note: hosts Metadata must be prior generated and binded to the hosts (manually or by IaC tools)**
+### Note: hosts Metadata must be prior generated and binded to the hosts (manually or by IaC tools)
 
 ## Help
 
