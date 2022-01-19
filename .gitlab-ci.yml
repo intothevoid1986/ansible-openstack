@@ -1,7 +1,7 @@
-# include:
-#   project: "gitops/autodevops/auto-devops"
-#   ref: master
-#   file: Auto-DevOps.gitlab-ci.yml
+include:
+  project: "gitops/autodevops/auto-devops"
+  ref: master
+  file: Auto-DevOps.gitlab-ci.yml
 
 image: golang
 
@@ -9,7 +9,7 @@ variables:
   IS_DOCKER: "false"
 
 stages:
-  - "build"
+  - build
 
 build:
   script:
