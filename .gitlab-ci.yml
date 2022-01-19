@@ -1,0 +1,16 @@
+include:
+  project: "gitops/autodevops/auto-devops"
+  ref: master
+  file: Auto-DevOps.gitlab-ci.yml
+
+image: golang
+
+variables:
+  IS_DOCKER: "false"
+
+stages:
+  - "build"
+
+build:
+  script:
+    - go build -o ansible-openstack
