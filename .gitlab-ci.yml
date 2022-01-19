@@ -14,3 +14,5 @@ build:
   stage: build
   script:
     - go build -o ansible-openstack
+  tags:
+    - latest-runner
