@@ -29,6 +29,7 @@ var fullInventory []Inventory
 
 func main() {
 
+	mainGroup := flag.String("main-group", "staging:children", "Specify the main group file contained in the inventory file. Use always <name>:children form, otherwise it will break the code!")
 	path := flag.String("output", "./hosts", "Specify output path for inventory.ini file")
 	filename := flag.String("filename", "inventory.ini", "Specify inventory output filename")
 	domainName := flag.String("domain", ".it-mil1.ecs.compute.internal", "Specify domain name for the hosts")
@@ -68,7 +69,7 @@ func main() {
 		fullInventory = append(fullInventory, inventory)
 	}
 
-	err = generateInventoryFile(fullInventory, *path+"/"+*filename, *domainName)
+	err = generateInventoryFile(fullInventory, *path+"/"+*filename, *domainName, *mainGroup)
 	if err != nil {
 		log.Panicf("Error writing INI file: %v\n", err)
 		return
@@ -152,7 +153,7 @@ func retriveNetworAddress(client *gophercloud.ServiceClient, id string) (ip stri
 	return ip, nil
 }
 
-func generateInventoryFile(hosts []Inventory, path string, domain string) (err error) {
+func generateInventoryFile(hosts []Inventory, path string, domain string, mainGroup string) (err error) {
 	output, err := ini.LoadSources(ini.LoadOptions{
 		AllowBooleanKeys: true,
 	}, path)
@@ -160,7 +161,7 @@ func generateInventoryFile(hosts []Inventory, path string, domain string) (err e
 		return err
 	}
 	for _, host := range hosts {
-		output.Section("staging:children").NewBooleanKey(host.tag)
+		output.Section(mainGroup).NewBooleanKey(host.tag)
 		for _, element := range host.Element {
 			output.Section(host.tag).NewBooleanKey(element.Name + domain)
 		}
