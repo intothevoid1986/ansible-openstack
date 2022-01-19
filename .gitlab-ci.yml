@@ -1,8 +1,7 @@
-include:
-  project: "gitops/autodevops/auto-devops"
-  ref: master
-  file: Auto-DevOps.gitlab-ci.yml
-
+# include:
+#   project: "gitops/autodevops/auto-devops"
+#   ref: master
+#   file: Auto-DevOps.gitlab-ci.yml
 
 variables:
   IS_DOCKER: "false"
