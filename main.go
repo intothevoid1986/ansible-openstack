@@ -8,18 +8,20 @@ import (
 	"github.com/gophercloud/gophercloud/openstack"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 	"github.com/gophercloud/gophercloud/pagination"
-	yaml "gopkg.in/yaml.v3"
+	"github.com/gophercloud/utils/openstack/clientconfig"
+	ini "gopkg.in/ini.v1"
+	// yaml "gopkg.in/yaml.v3"
 )
 
 type Inventory struct {
-	Tag     string    `yaml:"group"`
-	Element []Element `yaml:"nodes"`
+	tag     string
+	Element []Element
 }
 
 type Element struct {
-	Id   string `yaml:"id"`
-	Name string `yaml:"hostname"`
-	Ip   string `yaml:"ip"`
+	id   string
+	Name string
+	Ip   string
 }
 
 var fullInventory []Inventory
@@ -28,17 +30,12 @@ func main() {
 
 	args := os.Args
 
-	opts := gophercloud.AuthOptions{
-		IdentityEndpoint: "https://api.it-mil1.entercloudsuite.com/v2.0",
-		Username:         "andrea.colaiuda@irideos.it",
-		Password:         "Gn0m0@i986!_",
-		TenantName:       "andrea.colaiuda@irideos.it",
-		Scope:            &gophercloud.AuthScope{ProjectName: "andrea.colaiuda@irideos.it"},
-	}
-
 	server_opts := servers.ListOpts{}
 
-	provider, err := initProvider(opts)
+	os.Remove("inventory.ini")
+	os.Create("inventory.ini")
+
+	provider, err := initProvider()
 	if err != nil {
 		log.Fatalf("Error initializing Openstack provider: %v\n", err)
 		return
@@ -59,16 +56,28 @@ func main() {
 		fullInventory = append(fullInventory, inventory)
 	}
 
-	err = generateInventoryFile(fullInventory, "inventory.yml")
+	err = generateInventoryFile(fullInventory, "inventory.ini")
 	if err != nil {
-		log.Panicf("Error writing YAML file: %v\n", err)
+		log.Panicf("Error writing INI file: %v\n", err)
 		return
 	}
 
 }
 
-func initProvider(opts gophercloud.AuthOptions) (provider *gophercloud.ProviderClient, err error) {
-	provider, err = openstack.AuthenticatedClient(opts)
+func authenticate() (client *gophercloud.ProviderClient, err error) {
+	opts := &clientconfig.ClientOpts{
+		Cloud: "ocloud",
+	}
+	client, err = clientconfig.AuthenticatedClient(opts)
+	if err != nil {
+		log.Fatalf("Error authenticating user: %v\n", err)
+		return nil, err
+	}
+	return client, nil
+}
+
+func initProvider() (provider *gophercloud.ProviderClient, err error) {
+	provider, err = authenticate()
 	if err != nil {
 		log.Fatalf("Error during authentication: %v", err)
 	}
@@ -97,11 +106,11 @@ func retriveServers(client *gophercloud.ServiceClient, server_opts servers.ListO
 			for _, v2 := range v.Metadata {
 				if v2 == tag {
 					var element Element
-					element.Id = v.ID
+					element.id = v.ID
 					element.Name = v.Name
-					element.Ip, err = retriveNetworAddress(client, element.Id)
+					element.Ip, err = retriveNetworAddress(client, element.id)
 					inventory.Element = append(inventory.Element, element)
-					inventory.Tag = tag
+					inventory.tag = tag
 				}
 			}
 		}
@@ -116,6 +125,7 @@ func retriveNetworAddress(client *gophercloud.ServiceClient, id string) (ip stri
 		addressList, err := servers.ExtractAddresses(p)
 		for _, addresses := range addressList {
 			for idx := 1; idx < len(addresses); idx += 2 {
+				// Get only IPv4
 				if addresses[idx].Version == 4 {
 					ip = addresses[idx].Address
 				}
@@ -130,11 +140,20 @@ func retriveNetworAddress(client *gophercloud.ServiceClient, id string) (ip stri
 }
 
 func generateInventoryFile(hosts []Inventory, path string) (err error) {
-	output, err := yaml.Marshal(hosts)
+	output, err := ini.LoadSources(ini.LoadOptions{
+		AllowBooleanKeys: true,
+	}, path)
 	if err != nil {
 		return err
 	}
-	os.WriteFile(path, output, 0644)
+	for _, host := range hosts {
+		output.Section("staging:children").NewBooleanKey(host.tag)
+		for _, element := range host.Element {
+			output.Section(host.tag).NewBooleanKey(element.Name + ".it-mil1.ecs.compute.internal")
+		}
+	}
+
+	output.SaveTo(path)
 	if err != nil {
 		return err
 	}
