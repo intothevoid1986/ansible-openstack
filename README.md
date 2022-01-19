@@ -76,11 +76,13 @@ To obtain more informations about usage, run:
 This will produce the following help screen:
 
 ```bash
-Usage of ./ansible-openstack:
+Usage of /tmp/go-build755480796/b001/exe/ansible-openstack:
   -domain string
         Specify domain name for the hosts (default ".it-mil1.ecs.compute.internal")
   -filename string
         Specify inventory output filename (default "inventory.ini")
+  -main-group string
+        Specify the main group file contained in the inventory file. Use always <name>:children form, otherwise it will break the code! (default "staging:children")
   -output string
         Specify output path for inventory.ini file (default "./hosts")
 ```
