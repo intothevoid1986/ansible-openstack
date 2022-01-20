@@ -1,3 +1,11 @@
+## [1.0.1](https://git.kqi.it/gitops/golang/ansible-openstack/compare/v1.0.0...v1.0.1) (2022-01-20)
+
+
+### Bug Fixes
+
+* **flags:** implemented main group tag as flag ([98e71eb](https://git.kqi.it/gitops/golang/ansible-openstack/commit/98e71eb625174583e893509efedcd597ef94db31))
+* **version:** resolve release failure ([4612c44](https://git.kqi.it/gitops/golang/ansible-openstack/commit/4612c44b7d5e0f26353840c30d26bed7b2551686))
+
 # 1.0.0 (2022-01-19)
 
 
