@@ -63,6 +63,8 @@ sudo ansible-openstack [tag list]
 
 to run the application with default parameters and generate a default inventory in hosts/inventory.ini
 
+It will also update your local /etc/hosts file with the public ips and host names retrived from cloud, to allow you to quick reach the hosts with Ansible.
+
 ### Note: hosts Metadata must be prior generated and binded to the hosts (manually or by IaC tools)
 
 ## Help
