@@ -29,10 +29,11 @@ To connect to an OpenStack instance, two more files are required in the Ansible 
 # clouds.yaml
 clouds:
   ocloud:
+    os_domain_name: "v2.0"
     auth:
-      username: "this should be overrided by secure.yaml"
-      password: "this should be overrided by secure.yaml"
-      project_name: "this should be overrided by secure.yaml"
+      username: "this sould be overwritten"
+      password: "This should be overwritten"
+      project_name: "andrea.colaiuda@irideos.it"
       auth_url: https://api.it-mil1.entercloudsuite.com/v2.0
     regions:
       - it-mil1

@@ -1,6 +1,7 @@
 # clouds.yaml
 clouds:
   ocloud:
+    os_domain_name: "v2.0"
     auth:
       username: "this sould be overwritten"
       password: "This should be overwritten"
