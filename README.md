@@ -79,7 +79,7 @@ To obtain more informations about usage, run:
 This will produce the following help screen:
 
 ```bash
-Usage of /tmp/go-build755480796/b001/exe/ansible-openstack:
+Usage of /tmp/go-build2450958836/b001/exe/ansible-openstack:
   -domain string
         Specify domain name for the hosts (default ".it-mil1.ecs.compute.internal")
   -filename string
@@ -88,4 +88,6 @@ Usage of /tmp/go-build755480796/b001/exe/ansible-openstack:
         Specify the main group file contained in the inventory file. Use always <name>:children form, otherwise it will break the code! (default "staging:children")
   -output string
         Specify output path for inventory.ini file (default "./hosts")
+  -reboot
+        Tell the app to reboot groups instances.
 ```

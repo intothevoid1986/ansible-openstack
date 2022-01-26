@@ -33,7 +33,7 @@ func main() {
 	path := flag.String("output", "./hosts", "Specify output path for inventory.ini file")
 	filename := flag.String("filename", "inventory.ini", "Specify inventory output filename")
 	domainName := flag.String("domain", ".it-mil1.ecs.compute.internal", "Specify domain name for the hosts")
-
+	reboot := flag.Bool("reboot", false, "Tell the app to reboot groups instances.")
 	flag.Parse()
 
 	args := os.Args
@@ -61,7 +61,7 @@ func main() {
 	}
 
 	for tagIdx := 1; tagIdx < len(args); tagIdx++ {
-		inventory, err := retriveServers(client, server_opts, args[tagIdx], *domainName)
+		inventory, err := retriveServers(client, server_opts, args[tagIdx], *domainName, *reboot)
 		if err != nil {
 			log.Panicf("Could not retrive servers: %v\n", err)
 			return
@@ -111,7 +111,7 @@ func initCompute(provider *gophercloud.ProviderClient) (client *gophercloud.Serv
 	return client, nil
 }
 
-func retriveServers(client *gophercloud.ServiceClient, server_opts servers.ListOpts, tag string, domain string) (inventory Inventory, err error) {
+func retriveServers(client *gophercloud.ServiceClient, server_opts servers.ListOpts, tag string, domain string, reboot bool) (inventory Inventory, err error) {
 	pager := servers.List(client, server_opts)
 	pager.EachPage(func(p pagination.Page) (bool, error) {
 		serverlist, err := servers.ExtractServers(p)
@@ -124,6 +124,10 @@ func retriveServers(client *gophercloud.ServiceClient, server_opts servers.ListO
 					element.Ip, err = retriveNetworAddress(client, element.id)
 					inventory.Element = append(inventory.Element, element)
 					inventory.tag = tag
+					if reboot {
+						servers.Reboot(client, element.id, servers.RebootOpts{Type: servers.OSReboot})
+						log.Printf("Rebooted server %v\n", element.Name)
+					}
 					editHostsFile(element.Ip, element.Name+domain)
 				}
 			}
