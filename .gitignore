@@ -2,3 +2,4 @@ vendor
 .vscode
 ansible-openstack
 secure.yaml
+hosts
