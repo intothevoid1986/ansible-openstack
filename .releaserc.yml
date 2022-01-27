@@ -5,7 +5,7 @@ plugins:
       - files:
         - ./version.txt
         from: 'version = *.*.*'
-        to: '"version": "${nextRelease.version}"'
+        to: 'version = ${nextRelease.version}'
         results:
         - file: ./version.txt
           hasChanged: true
